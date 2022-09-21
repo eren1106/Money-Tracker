@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:money_tracker/screens/AddScreen.dart';
-import 'package:money_tracker/screens/HomeScreen.dart';
-import 'package:money_tracker/screens/ReportScreen.dart';
+import 'package:money_tracker/screens/add_screen.dart';
+import 'package:money_tracker/screens/home_screen.dart';
+import 'package:money_tracker/screens/report_screen.dart';
 
 class InApp extends StatefulWidget {
   InApp({Key? key}) : super(key: key);
@@ -45,20 +45,29 @@ class _InAppState extends State<InApp> {
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.home,
+                color: _page == 0
+                    ? Theme.of(context).selectedRowColor
+                    : Theme.of(context).unselectedWidgetColor,
               ),
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.add_circle,
+                color: _page == 1
+                    ? Theme.of(context).selectedRowColor
+                    : Theme.of(context).unselectedWidgetColor,
               ),
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.bar_chart,
+                color: _page == 2
+                    ? Theme.of(context).selectedRowColor
+                    : Theme.of(context).unselectedWidgetColor,
               ),
             ),
           ],
-          onTap: (page){
+          onTap: (page) {
             _pageController.jumpToPage(page);
           },
         ),

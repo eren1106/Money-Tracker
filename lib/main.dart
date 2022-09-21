@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:money_tracker/InApp.dart';
+import 'package:money_tracker/in_app.dart';
+import 'package:money_tracker/theme/app_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData.dark(),
+      theme: AppTheme.darkTheme,
       home: InApp(),
     );
   }
