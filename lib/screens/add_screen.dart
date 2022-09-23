@@ -11,7 +11,9 @@ class _AddScreenState extends State<AddScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text('Add'),)
+      appBar: AppBar(
+        title: Text('Add New Expense'),
+      ),
     );
   }
 }

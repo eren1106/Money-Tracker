@@ -41,6 +41,7 @@ class _InAppState extends State<InApp> {
       ),
       bottomNavigationBar: Container(
         child: CupertinoTabBar(
+          backgroundColor: Theme.of(context).backgroundColor,
           items: [
             BottomNavigationBarItem(
               icon: Icon(

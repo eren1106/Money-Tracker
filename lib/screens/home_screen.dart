@@ -13,7 +13,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Home'),),
+      // appBar: AppBar(
+      //   title: Text('Home'),
+      //   backgroundColor: Theme.of(context).backgroundColor,
+      // ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: ExpensesCardsContainer(),
