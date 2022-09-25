@@ -7,5 +7,6 @@ class AppTheme {
     colorScheme: const ColorScheme.dark(),
     scaffoldBackgroundColor: colors.backgroundBlue,
     backgroundColor: colors.black,
+    primaryColor: colors.white,
   );
 }
