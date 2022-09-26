@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:money_tracker/theme/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:money_tracker/theme/app_theme.dart';
+import 'dart:io';
+
+import 'package:money_tracker/utils/utils.dart'; //File
 
 class AddScreen extends StatefulWidget {
   AddScreen({Key? key}) : super(key: key);
@@ -13,6 +16,49 @@ class _AddScreenState extends State<AddScreen> {
   List<String> categories = ['Food', 'Cloth', 'Bill'];
   String category = 'Food';
   DateTime date = DateTime.now();
+  File? image;
+
+  _selectImage(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: const Text('Add an Image'),
+            children: [
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Take a photo'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  File image = await pickImage(ImageSource.camera);
+                  setState(() {
+                    this.image = image;
+                  });
+                },
+              ),
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Choose from gallery'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  File image = await pickImage(ImageSource.gallery);
+                  setState(() {
+                    this.image = image;
+                  });
+                },
+              ),
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,16 +73,16 @@ class _AddScreenState extends State<AddScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Title(),
-              VerticalSeparator(),
+              verticalSeparator(),
               TitleTextField(),
-              VerticalSeparator(),
+              verticalSeparator(),
               Row(
                 children: [
                   Flexible(
                     flex: 1,
                     child: PriceTextField(),
                   ),
-                  HorizontalSeparator(),
+                  horizontalSeparator(),
                   Flexible(
                     fit: FlexFit.tight,
                     child: TextButton(
@@ -75,7 +121,7 @@ class _AddScreenState extends State<AddScreen> {
                       ),
                     ),
                   ),
-                  HorizontalSeparator(),
+                  horizontalSeparator(),
                   Flexible(
                     flex: 1,
                     fit: FlexFit.tight,
@@ -83,38 +129,65 @@ class _AddScreenState extends State<AddScreen> {
                   ),
                 ],
               ),
-              VerticalSeparator(),
+              verticalSeparator(),
               DescriptionTextField(),
-              VerticalSeparator(),
-              Expanded(
-                child: Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: AppTheme.colors.grey),
-                    borderRadius: BorderRadius.circular(5),
+              verticalSeparator(),
+              ImageSection(context),
+              verticalSeparator(),
+              ElevatedButton(
+                onPressed: () {},
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 15,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.image,
-                        size: 160,
-                        color: AppTheme.colors.grey,
-                      ),
-                      Text(
-                        'Add an image',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: AppTheme.colors.grey,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    'Add',
                   ),
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Expanded ImageSection(BuildContext context) {
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          _selectImage(context);
+        },
+        child: image == null
+            ? Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: AppTheme.colors.grey),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.image,
+                      size: 160,
+                      color: AppTheme.colors.grey,
+                    ),
+                    Text(
+                      'Add an image',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: AppTheme.colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Image.file(
+                image!,
+                fit: BoxFit.cover,
+              ), // '!' means non-nullable type
       ),
     );
   }
@@ -145,7 +218,7 @@ class _AddScreenState extends State<AddScreen> {
     );
   }
 
-  SizedBox HorizontalSeparator() => SizedBox(width: 20);
+  SizedBox horizontalSeparator() => SizedBox(width: 20);
 
   TextField PriceTextField() {
     return TextField(
@@ -169,7 +242,7 @@ class _AddScreenState extends State<AddScreen> {
     );
   }
 
-  SizedBox VerticalSeparator() {
+  SizedBox verticalSeparator() {
     return SizedBox(
       height: 20,
     );
