@@ -3,7 +3,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:money_tracker/theme/app_theme.dart';
 import 'dart:io';
 
-import 'package:money_tracker/utils/utils.dart'; //File
+import 'package:money_tracker/utils/utils.dart';
+import 'package:money_tracker/widgets/text_field_input.dart'; //File
 
 class AddScreen extends StatefulWidget {
   AddScreen({Key? key}) : super(key: key);
@@ -13,10 +14,22 @@ class AddScreen extends StatefulWidget {
 }
 
 class _AddScreenState extends State<AddScreen> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
   List<String> categories = ['Food', 'Cloth', 'Bill'];
   String category = 'Food';
   DateTime date = DateTime.now();
   File? image;
+
+  @override
+  dispose() {
+    super.dispose();
+    _titleController.dispose();
+    _priceController.dispose();
+    _descriptionController.dispose();
+  }
 
   _selectImage(BuildContext context) async {
     return showDialog(
@@ -74,13 +87,21 @@ class _AddScreenState extends State<AddScreen> {
             children: [
               Title(),
               verticalSeparator(),
-              TitleTextField(),
+              TextFieldInput(
+                label: 'Title',
+                textInputType: TextInputType.text,
+                textEditingController: _titleController,
+              ),
               verticalSeparator(),
               Row(
                 children: [
                   Flexible(
                     flex: 1,
-                    child: PriceTextField(),
+                    child: TextFieldInput(
+                      label: 'Price',
+                      textInputType: TextInputType.text,
+                      textEditingController: _priceController,
+                    ),
                   ),
                   horizontalSeparator(),
                   Flexible(
@@ -130,7 +151,12 @@ class _AddScreenState extends State<AddScreen> {
                 ],
               ),
               verticalSeparator(),
-              DescriptionTextField(),
+              TextFieldInput(
+                label: 'Description',
+                textInputType: TextInputType.multiline,
+                textEditingController: _descriptionController,
+                rows: 3,
+              ),
               verticalSeparator(),
               ImageSection(context),
               verticalSeparator(),
@@ -192,20 +218,6 @@ class _AddScreenState extends State<AddScreen> {
     );
   }
 
-  TextField DescriptionTextField() {
-    return TextField(
-      minLines: 3,
-      maxLines: null,
-      keyboardType: TextInputType.multiline,
-      decoration: InputDecoration(
-        labelText: 'Description',
-        border: OutlineInputBorder(
-          borderSide: BorderSide(),
-        ),
-      ),
-    );
-  }
-
   DropdownButton<String> CategoriesDropDown() {
     return DropdownButton(
       value: category,
@@ -219,28 +231,6 @@ class _AddScreenState extends State<AddScreen> {
   }
 
   SizedBox horizontalSeparator() => SizedBox(width: 20);
-
-  TextField PriceTextField() {
-    return TextField(
-      decoration: InputDecoration(
-        labelText: 'Price',
-        border: OutlineInputBorder(
-          borderSide: BorderSide(),
-        ),
-      ),
-    );
-  }
-
-  TextField TitleTextField() {
-    return TextField(
-      decoration: InputDecoration(
-        labelText: 'Title',
-        border: new OutlineInputBorder(
-          borderSide: new BorderSide(),
-        ),
-      ),
-    );
-  }
 
   SizedBox verticalSeparator() {
     return SizedBox(
