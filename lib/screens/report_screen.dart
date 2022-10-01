@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_tracker/widgets/expenses_pie_chart.dart';
 
 class ReportScreen extends StatefulWidget {
   ReportScreen({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class _ReportScreenState extends State<ReportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text('Report'),)
+      body: Center(child: ExpensesPieChart(),)
     );
   }
 }
