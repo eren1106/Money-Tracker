@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:money_tracker/theme/app_theme.dart';
+import 'package:money_tracker/utils/firestore_methods.dart';
 import 'dart:io';
 
 import 'package:money_tracker/utils/utils.dart';
@@ -22,6 +24,8 @@ class _AddScreenState extends State<AddScreen> {
   String category = 'Food';
   DateTime date = DateTime.now();
   File? image;
+
+  bool _isLoading = false;
 
   @override
   dispose() {
@@ -70,6 +74,42 @@ class _AddScreenState extends State<AddScreen> {
             ],
           );
         });
+  }
+
+  void _addExpense() async {
+    String title = _titleController.text;
+    double price = double.parse(_priceController.text);
+    String description = _descriptionController.text;
+    String imageUrl = image == null ? '' : 'selected image';
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      String res = await FirestoreMethods().addExpense(
+        FirebaseAuth.instance.currentUser!.uid,
+        title,
+        description,
+        category,
+        imageUrl,
+        price,
+        date,
+      );
+
+      if(res == 'success'){
+        showSnackBar('Expense added successfully', context);
+      }
+      else{
+        showSnackBar(res, context);
+      }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+
+     setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -161,7 +201,7 @@ class _AddScreenState extends State<AddScreen> {
               ImageSection(context),
               verticalSeparator(),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: _addExpense,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 5,

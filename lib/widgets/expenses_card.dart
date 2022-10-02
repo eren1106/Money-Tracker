@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:money_tracker/screens/expense_detail_screen.dart';
 
 class ExpensesCard extends StatelessWidget {
   const ExpensesCard({
     Key? key,
-    required this.icon,
-    required this.title,
-    required this.date,
-    required this.price,
-    required this.color,
+    required this.snap,
   }) : super(key: key);
 
-  final IconData icon;
-  final String title;
-  final String date;
-  final String price;
-  final Color color;
+  final snap;
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +25,13 @@ class ExpensesCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
         margin: const EdgeInsets.symmetric(vertical: 5),
         decoration: BoxDecoration(
-          color: color,
+          color: Colors.blueAccent,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           children: [
             Icon(
-              icon,
+              Icons.restaurant,
               size: 30,
             ),
             const SizedBox(
@@ -48,8 +41,8 @@ class ExpensesCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Eat at vegan restaurant',
+                  Text(
+                    snap['title'],
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -61,10 +54,10 @@ class ExpensesCard extends StatelessWidget {
                     textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(
-                        date,
+                        DateFormat('dd/MM/yyyy').format(snap['date'].toDate()),
                       ),
                       Text(
-                        'RM${price}',
+                        'RM${snap['price'].toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:money_tracker/in_app.dart';
+import 'package:money_tracker/screens/login_screen.dart';
 import 'package:money_tracker/theme/app_theme.dart';
 
 void main() async{
@@ -19,7 +21,27 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: AppTheme.darkTheme,
-      home: InApp(),
+      home: StreamBuilder( //use streambuilder to keep checking whether got user or not
+        stream: FirebaseAuth.instance.authStateChanges(), //when auth change (login or logout), it will go through here
+        builder: (context, snapshot){
+          if(snapshot.connectionState == ConnectionState.active){
+            if(snapshot.hasData){
+              return InApp();
+            }
+            else if(snapshot.hasError){
+              return Center(
+                child: Text('${snapshot.error}'), //show error text when got error
+              );
+            }
+          }
+          if(snapshot.connectionState == ConnectionState.waiting){ //show loading
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return LoginScreen(); //show login when no user
+        },
+      ),
     );
   }
 }
