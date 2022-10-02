@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:money_tracker/utils/utils.dart';
 import 'package:money_tracker/widgets/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,9 +12,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool _isLoading = false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -20,7 +25,31 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
   }
-  
+
+  void loginUser() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    if (email == '' || password == '') {
+      showSnackBar('Please fill in all the fields', context);
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      print(_auth.currentUser);
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextFieldInput(
                 label: 'Email',
-                textInputType: TextInputType.text,
+                textInputType: TextInputType.emailAddress,
                 textEditingController: _emailController,
               ),
               const SizedBox(
@@ -57,17 +86,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 20,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: loginUser,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 12,
                   ),
-                  child: Text(
-                    'Log in',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        )
+                      : Text(
+                          'Log in',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
                 ),
               ),
             ],

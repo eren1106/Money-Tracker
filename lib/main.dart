@@ -1,8 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:money_tracker/in_app.dart';
 import 'package:money_tracker/theme/app_theme.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized(); //must have this in main.dart to use firebase
+  await Firebase.initializeApp(); //must have this in main.dart to use firebase
   runApp(const MyApp());
 }
 
