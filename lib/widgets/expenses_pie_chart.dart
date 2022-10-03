@@ -12,11 +12,14 @@ class _ExpensesPieChartState extends State<ExpensesPieChart> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: PieChart(
-        PieChartData(
-          sections: getSections(),
-          sectionsSpace: 0,
-          centerSpaceRadius: 90,
+      child: Flexible( //it will overflow infinity to bottom if didnt wrap with flexible
+        child: PieChart(
+          PieChartData(
+            sections: getSections(),
+            sectionsSpace: 0,
+            centerSpaceRadius: 90,
+            startDegreeOffset: 270,
+          ),
         ),
       ),
     );

@@ -8,5 +8,6 @@ class AppTheme {
     scaffoldBackgroundColor: colors.backgroundBlue,
     backgroundColor: colors.black,
     primaryColor: colors.white,
+    secondaryHeaderColor: colors.grey,
   );
 }
