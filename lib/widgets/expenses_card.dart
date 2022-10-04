@@ -17,7 +17,7 @@ class ExpensesCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ExpenseDetailScreen(),
+            builder: (context) => ExpenseDetailScreen(snap: snap),
           ),
         );
       }),
@@ -54,10 +54,10 @@ class ExpensesCard extends StatelessWidget {
                     textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(
-                        DateFormat('dd/MM/yyyy').format(snap['date'].toDate()),
+                        DateFormat('dd/MM/yyyy').format(snap['date'].toDate()), //must have toDate when retrieve from firstore
                       ),
                       Text(
-                        'RM${snap['price'].toStringAsFixed(2)}',
+                        'RM${snap['price'].toStringAsFixed(2)}', //toStringAsFixed(2) => 2 decimal place
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,

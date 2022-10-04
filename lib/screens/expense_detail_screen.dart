@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:money_tracker/widgets/detail_row.dart';
 
-class ExpenseDetailScreen extends StatefulWidget {
-  ExpenseDetailScreen({Key? key}) : super(key: key);
+class ExpenseDetailScreen extends StatelessWidget {
+  const ExpenseDetailScreen({Key? key, required this.snap}) : super(key: key);
 
-  @override
-  State<ExpenseDetailScreen> createState() => _ExpenseDetailScreenState();
-}
+  final snap;
 
-class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +19,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
           child: Column(
             children: [
               Text(
-                'Eat at vegan restaurant',
+                snap['title'],
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -46,27 +44,30 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                     children: [
                       DetailRow(
                         label: 'Price: ',
-                        text: 'RM66',
+                        text: 'RM${snap['price'].toStringAsFixed(2)}',
                       ),
                       DetailRow(
                         label: 'Date: ',
-                        text: '15/10/22',
+                        text: DateFormat('dd/MM/yyyy')
+                            .format(snap['date'].toDate()),
                       ),
                       DetailRow(
                         label: 'Category: ',
-                        text: 'Food',
+                        text: snap['category'],
                       ),
                       DetailRow(
                         isColumn: true,
                         label: 'Description: ',
-                        text:
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishi",
+                        text: snap['description'],
                       ),
                       SizedBox(
                         height: 15,
                       ),
-                      Image.network(
-                          'https://vegan.com/wp-content/uploads/elementor/thumbs/restaurants-pbdocpldpbmw0qpkn5e2d3rspl4jw9o9a4u80bbvzc.jpg'),
+                      snap['imageUrl'] != ''
+                          ? Image.network(
+                              snap['imageUrl'],
+                            )
+                          : Container(),
                     ],
                   ),
                 ),

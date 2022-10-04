@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:money_tracker/theme/app_theme.dart';
 import 'package:money_tracker/utils/firestore_methods.dart';
 import 'dart:io';
-
 import 'package:money_tracker/utils/utils.dart';
-import 'package:money_tracker/widgets/text_field_input.dart'; //File
+import 'package:money_tracker/widgets/text_field_input.dart';
 
 class AddScreen extends StatefulWidget {
   AddScreen({Key? key}) : super(key: key);
@@ -20,10 +20,10 @@ class _AddScreenState extends State<AddScreen> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  List<String> categories = ['Food', 'Cloth', 'Bill'];
-  String category = 'Food';
-  DateTime date = DateTime.now();
-  File? image;
+  final List<String> _categories = ['Food', 'Cloth', 'Bill'];
+  String _category = 'Food';
+  DateTime _date = DateTime.now();
+  File? _image;
 
   bool _isLoading = false;
 
@@ -49,7 +49,7 @@ class _AddScreenState extends State<AddScreen> {
                   Navigator.of(context).pop();
                   File image = await pickImage(ImageSource.camera);
                   setState(() {
-                    this.image = image;
+                    _image = image;
                   });
                 },
               ),
@@ -60,7 +60,7 @@ class _AddScreenState extends State<AddScreen> {
                   Navigator.of(context).pop();
                   File image = await pickImage(ImageSource.gallery);
                   setState(() {
-                    this.image = image;
+                    _image = image;
                   });
                 },
               ),
@@ -80,7 +80,6 @@ class _AddScreenState extends State<AddScreen> {
     String title = _titleController.text;
     double price = double.parse(_priceController.text);
     String description = _descriptionController.text;
-    String imageUrl = image == null ? '' : 'selected image';
 
     setState(() {
       _isLoading = true;
@@ -91,23 +90,22 @@ class _AddScreenState extends State<AddScreen> {
         FirebaseAuth.instance.currentUser!.uid,
         title,
         description,
-        category,
-        imageUrl,
+        _category,
+        _image,
         price,
-        date,
+        _date,
       );
 
-      if(res == 'success'){
+      if (res == 'success') {
         showSnackBar('Expense added successfully', context);
-      }
-      else{
+      } else {
         showSnackBar(res, context);
       }
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
 
-     setState(() {
+    setState(() {
       _isLoading = false;
     });
   }
@@ -151,7 +149,7 @@ class _AddScreenState extends State<AddScreen> {
                         DateTime? newDate = await showDatePicker(
                           //showDatePicker will return a future
                           context: context,
-                          initialDate: date,
+                          initialDate: _date,
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
                         );
@@ -159,7 +157,7 @@ class _AddScreenState extends State<AddScreen> {
                         if (newDate == null) return;
                         //if pressed OK
                         setState(() {
-                          date = newDate;
+                          _date = newDate;
                         });
                       },
                       // ignore: sort_child_properties_last
@@ -169,7 +167,7 @@ class _AddScreenState extends State<AddScreen> {
                           vertical: 12,
                         ),
                         child: Text(
-                          '${date.day}/${date.month}/${date.year}',
+                          '${_date.day}/${_date.month}/${_date.year}',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.normal,
@@ -207,9 +205,13 @@ class _AddScreenState extends State<AddScreen> {
                     horizontal: 5,
                     vertical: 15,
                   ),
-                  child: Text(
-                    'Add',
-                  ),
+                  child: _isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Text(
+                          'Add',
+                        ),
                 ),
               ),
             ],
@@ -225,7 +227,7 @@ class _AddScreenState extends State<AddScreen> {
         onTap: () {
           _selectImage(context);
         },
-        child: image == null
+        child: _image == null
             ? Container(
                 height: 100,
                 decoration: BoxDecoration(
@@ -251,7 +253,7 @@ class _AddScreenState extends State<AddScreen> {
                 ),
               )
             : Image.file(
-                image!,
+                _image!,
                 fit: BoxFit.cover,
               ), // '!' means non-nullable type
       ),
@@ -260,11 +262,11 @@ class _AddScreenState extends State<AddScreen> {
 
   DropdownButton<String> CategoriesDropDown() {
     return DropdownButton(
-      value: category,
-      items: categories.map((category) => buildMenuItem(category)).toList(),
+      value: _category,
+      items: _categories.map((category) => buildMenuItem(category)).toList(),
       onChanged: (value) {
         setState(() {
-          category = value as String;
+          _category = value as String;
         });
       },
     );
