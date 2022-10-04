@@ -20,7 +20,21 @@ class _AddScreenState extends State<AddScreen> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  final List<String> _categories = ['Food', 'Cloth', 'Bill'];
+  final List<String> _categories = [
+    'Clothing',
+    'Debt',
+    'Education',
+    'Entertainment',
+    'Food',
+    'Household',
+    'Insurance',
+    'Medical',
+    'Personal',
+    'Transportation',
+    'Utilities',
+    'Others'
+  ];
+
   String _category = 'Food';
   DateTime _date = DateTime.now();
   File? _image;
