@@ -283,6 +283,7 @@ class _AddScreenState extends State<AddScreen> {
           _category = value as String;
         });
       },
+      isExpanded: true,
     );
   }
 

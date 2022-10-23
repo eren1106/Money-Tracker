@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:money_tracker/widgets/expenses_pie_chart.dart';
 
@@ -10,6 +12,27 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   int _tabIndex = 0;
+  List expenses = [];
+
+  Future<void> getExpenses() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('expenses')
+        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    // Get data from docs and convert map to List
+    setState(() {
+      expenses = querySnapshot.docs.map((doc) => doc.data()).toList();
+      print(expenses);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getExpenses();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +56,21 @@ class _ReportScreenState extends State<ReportScreen> {
                     tab(context, 4, 'Calendar', () {}),
                   ],
                 ),
-                ExpensesPieChart(),
+                FutureBuilder(
+                    //to pass future to the child
+                    future: FirebaseFirestore.instance
+                        .collection('expenses')
+                        .where('uid',
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                        .get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return ExpensesPieChart(expensesSnap: (snapshot.data! as dynamic).docs); //use (snapshot.data! as dynamic) to get docs
+                    })
               ],
             ),
           ),
